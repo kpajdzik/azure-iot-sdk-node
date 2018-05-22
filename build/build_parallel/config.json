@@ -2,8 +2,7 @@
   "tasks": {
     "setup": {
       "description": "install all project dependencies, builds, and registers the package with the cache",
-      "command": "cd {fullpath} {perDependencyCommand} && npm ln && npm run build",
-      "perDependencyCommand": " && npm ln {dependency}"
+      "command": "cd {fullpath} && npm install && npm run build"
     },
     "teardown": {
       "description": "uninstall all project dependencies and deregister the package from the cache",
