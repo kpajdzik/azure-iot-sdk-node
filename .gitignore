@@ -235,3 +235,6 @@ build/build_parallel/temp
 
 # lerna
 lerna-debug.log
+
+# mocha
+**/test-results.xml
