@@ -2,7 +2,6 @@
   "reporterEnabled": "spec,mocha-junit-reporter",
   "mochaJunitReporterReporterOptions": {
     "mochaFile": "test-results.[hash].xml",
-    "testsuitesTitle": true,
-    "suiteTitleSeparatedBy": "."
+    "includePending": true
   }
 }
