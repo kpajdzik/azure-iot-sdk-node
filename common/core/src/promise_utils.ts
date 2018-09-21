@@ -291,5 +291,5 @@ export function tripleValueCallbackToPromise<TResult1, TResult2, TPromiseResult>
 export function httpCallbackToPromise<TResult>(
   callbackOperation: (callback: HttpResponseCallback<TResult>) => void,
   callback?: HttpResponseCallback<TResult>): Promise<ResultWithHttpResponse<TResult>> | void {
-  return tripleValueCallbackToPromise(callbackOperation, (b, r) => createResultWithHttpResponse(b, r), callback)
+  return tripleValueCallbackToPromise(callbackOperation, (b, r) => createResultWithHttpResponse(b, r), callback);
 };
