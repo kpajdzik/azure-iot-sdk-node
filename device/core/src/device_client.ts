@@ -110,11 +110,10 @@ export class Client extends InternalClient {
    * Registers a callback for a method named `methodName`.
    *
    * @param methodName Name of the method that will be handled by the callback
-   * @param [callback] Optional function that shall be called whenever a method request for the method called `methodName` is received.
-   * @returns {Promise<DeviceMethodExchange> | void} Promise if no callback function was passed, void otherwise.
+   * @param callback Function that shall be called whenever a method request for the method called `methodName` is received.
    */
-  onDeviceMethod(methodName: string, callback?: DoubleValueCallback<DeviceMethodRequest, DeviceMethodResponse>): Promise<DeviceMethodExchange> | void {
-    return doubleValueCallbackToPromise((_callback) => this._onDeviceMethod(methodName, _callback), createDeviceMethodExchange, callback);
+  onDeviceMethod(methodName: string, callback: DoubleValueCallback<DeviceMethodRequest, DeviceMethodResponse>): void {
+    this._onDeviceMethod(methodName, callback);
   }
 
   /**
