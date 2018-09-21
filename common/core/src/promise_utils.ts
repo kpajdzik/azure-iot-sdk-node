@@ -6,7 +6,7 @@
  * Defines type describing callback with two results.
  *
  * @template TResult1 - Type of the first result value, possibly Error.
- * @template TResult2 - Type of the second result value, possible Error.
+ * @template TResult2 - Type of the second result value, possibly Error.
  */
 export type DoubleValueCallback<TResult1, TResult2> = (result1?: TResult1, result2?: TResult2) => void;
 
@@ -23,14 +23,14 @@ export type NoErrorCallback<TResult> = (result?: TResult) => void;
 export type ErrorCallback = (error?: Error) => void;
 
 /**
- * Defines type describing regular callback with two results - one is the result value, the other one is Error.
+ * Defines type describing regular callback with two results - one is the Error, the other one is the result value.
  *
  * @template TResult - Type of the result value.
  */
 export type Callback<TResult> = DoubleValueCallback<Error, TResult>;
 
 /**
- * Defines type describing regular callback with three results - two are the result values, the other one is Error.
+ * Defines type describing regular callback with three results - the first one is Error, the other two are the result values.
  *
  * @template TResult1 - Type of the first result value.
  * @template TResult2 - Type of the second result value.
@@ -45,6 +45,8 @@ export type TripleValueCallback<TResult1, TResult2> = (error?: Error, result1?: 
 export type HttpResponseCallback<TResult> = TripleValueCallback<TResult, any>;
 
 /**
+ * @private
+ *
  * Converts method taking regular callback as a parameter to method returning a Promise if userCallback is not specified.
  * Otherwise, it executes the method with userCallback as the callback.
  *
@@ -90,6 +92,8 @@ export function callbackToPromise<TResult>(callBackOperation: (callback: Callbac
 }
 
 /**
+ * @private
+ *
  * Converts method taking callback returning only error as a parameter to method returning a void Promise if userCallback is not specified.
  * Otherwise, it executes the method with userCallback as the callback.
  *
@@ -114,6 +118,8 @@ export function errorCallbackToPromise(callBackOperation: (callback: ErrorCallba
 }
 
 /**
+ * @private
+ *
  * Converts method taking callback returning only result as a parameter to method returning a Promise with the result if userCallback is not specified.
  * Otherwise, it executes the method with userCallback as the callback.
  *
@@ -151,6 +157,8 @@ export function noErrorCallbackToPromise<TResult>(callBackOperation: (callback: 
 }
 
 /**
+ * @private
+ *
  * Converts method taking callback with two result values (one can be an Error) as a parameter to method returning a Promise if userCallback is not specified.
  * Otherwise, it executes the method with userCallback as the callback.
  * Promise cannot return multiple objects so the return values have to be packed into a single object.
@@ -210,6 +218,8 @@ export function doubleValueCallbackToPromise<TResult1, TResult2, TPromiseResult>
 }
 
 /**
+ * @private
+ *
  * Converts method taking callback with two result values and an error as a parameter to method returning a Promise if userCallback is not specified.
  * Otherwise, it executes the method with userCallback as the callback.
  * Promise cannot return multiple objects so the return values have to be packed into a single object.

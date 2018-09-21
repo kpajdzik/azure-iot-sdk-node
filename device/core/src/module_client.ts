@@ -199,7 +199,7 @@ export class ModuleClient extends InternalClient {
   invokeMethod(deviceId: string, moduleIdOrMethodParams: string | MethodParams, methodParamsOrCallback: MethodParams | Callback<MethodResult>, callback?: Callback<MethodResult>): Promise<MethodResult> | void {
     if (callback) {
       return this._invokeMethod(deviceId, moduleIdOrMethodParams as string, methodParamsOrCallback as MethodParams, callback);
-    } else if ((methodParamsOrCallback instanceof Function)) {
+    } else if (methodParamsOrCallback instanceof Function) {
       return this._invokeMethod(deviceId, moduleIdOrMethodParams as MethodParams, methodParamsOrCallback as Callback<MethodResult>);
     }
 
@@ -353,38 +353,33 @@ export class ModuleClient extends InternalClient {
    *     - IOTEDGE_AUTHSCHEME           Authentication scheme to use; must be "sasToken"
    *
    * @param transportCtor Transport protocol used to connect to IoT hub.
-   * @param callback      Callback to invoke when the ModuleClient has been constructured or if an
+   * @param [callback]    Optional callback to invoke when the ModuleClient has been constructured or if an
    *                      error occurs while creating the client.
+   * @returns {Promise<ModuleClient> | void} Promise if no callback function was passed, void otherwise.
    */
-  static _fromEnvironment(transportCtor: any, callback: (err?: Error, client?: ModuleClient) => void): void {
-    // Codes_SRS_NODE_MODULE_CLIENT_13_033: [ The fromEnvironment method shall throw a ReferenceError if the callback argument is falsy or is not a function. ]
-    if (!callback || typeof (callback) !== 'function') {
-      throw new ReferenceError('callback cannot be \'' + callback + '\'');
-    }
-
-    // Codes_SRS_NODE_MODULE_CLIENT_13_026: [ The fromEnvironment method shall invoke callback with a ReferenceError if the transportCtor argument is falsy. ]
-    if (!transportCtor) {
-      callback(new ReferenceError('transportCtor cannot be \'' + transportCtor + '\''));
-      return;
-    }
-
-    // Codes_SRS_NODE_MODULE_CLIENT_13_028: [ The fromEnvironment method shall delegate to ModuleClient.fromConnectionString if an environment variable called EdgeHubConnectionString or IotHubConnectionString exists. ]
-
-    // if the environment has a value for EdgeHubConnectionString then we use that
-    const connectionString = process.env.EdgeHubConnectionString || process.env.IotHubConnectionString;
-    if (connectionString) {
-      ModuleClient._fromEnvironmentNormal(connectionString, transportCtor, callback);
-    } else {
-      ModuleClient._fromEnvironmentEdge(transportCtor, callback);
-    }
-  }
-
   static fromEnvironment(transportCtor: any, callback?: Callback<ModuleClient>): Promise<ModuleClient> | void {
-    if (callback) {
-      return this._fromEnvironment(transportCtor, callback);
-    }
+    return callbackToPromise((_callback) => {
+      // Codes_SRS_NODE_MODULE_CLIENT_13_033: [ The fromEnvironment method shall throw a ReferenceError if the callback argument is falsy or is not a function. ]
+      if (!_callback || typeof (_callback) !== 'function') {
+        throw new ReferenceError('callback cannot be \'' + _callback + '\'');
+      }
 
-    return callbackToPromise((_callback) => this._fromEnvironmentEdge(transportCtor, _callback));
+      // Codes_SRS_NODE_MODULE_CLIENT_13_026: [ The fromEnvironment method shall invoke callback with a ReferenceError if the transportCtor argument is falsy. ]
+      if (!transportCtor) {
+        _callback(new ReferenceError('transportCtor cannot be \'' + transportCtor + '\''));
+        return;
+      }
+
+      // Codes_SRS_NODE_MODULE_CLIENT_13_028: [ The fromEnvironment method shall delegate to ModuleClient.fromConnectionString if an environment variable called EdgeHubConnectionString or IotHubConnectionString exists. ]
+
+      // if the environment has a value for EdgeHubConnectionString then we use that
+      const connectionString = process.env.EdgeHubConnectionString || process.env.IotHubConnectionString;
+      if (connectionString) {
+        ModuleClient._fromEnvironmentNormal(connectionString, transportCtor, _callback);
+      } else {
+        ModuleClient._fromEnvironmentEdge(transportCtor, _callback);
+      }
+    }, callback);
   }
 
   private static _fromEnvironmentEdge(transportCtor: any, callback: (err?: Error, client?: ModuleClient) => void): void {

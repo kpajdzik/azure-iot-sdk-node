@@ -54,7 +54,7 @@ describe('ModuleClient', function () {
       it('throws if callback is falsy or not a function', function() {
         assert.throws(function() {
           return ModuleClient.fromEnvironment(null, badCallback);
-        }, ReferenceError);
+        }, TypeError);
       });
     });
 
