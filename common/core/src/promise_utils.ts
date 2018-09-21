@@ -2,6 +2,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 'use strict';
 
+import { ResultWithHttpResponse, createResultWithHttpResponse } from './results';
+
 /**
  * Defines type describing callback with two results.
  *
@@ -52,7 +54,7 @@ export type HttpResponseCallback<TResult> = TripleValueCallback<TResult, any>;
  *
  * @param {(callback: Callback<TResult>) => void} callBackOperation - Function taking regular callback as a parameter.
  * @param {Callback<TResult>} [userCallback] - Optional caller-provided callback. The method will not return a Promise if specified.
- * @returns {Promise<TResult>} Promise with result of TResult type.
+ * @returns {Promise<TResult> | void} Promise with result of TResult type or void if user's callback provided
  * @template TResult - Type of the result value.
  * @example
  * // When method takes only callback as the parameter like example:
@@ -99,7 +101,7 @@ export function callbackToPromise<TResult>(callBackOperation: (callback: Callbac
  *
  * @param {callback: ErrorCallback) => void} callBackOperation - Function taking error-only returning callback as a parameter.
  * @param {ErrorCallback} [userCallback] - Optional caller-provided callback. The method will not return a Promise if specified.
- * @returns {Promise<void>} Promise with empty result or a rejection.
+ * @returns {Promise<void> | void} Promise with empty result or a rejection or void if user's callback provided
  * @example
  * // When method takes only callback as the parameter like example:
  * function foo(callback: Function) {[...]}
@@ -125,7 +127,7 @@ export function errorCallbackToPromise(callBackOperation: (callback: ErrorCallba
  *
  * @param {(callback: NoErrorCallback<TResult>) => void} callBackOperation - Function taking result-only returning callback as a parameter.
  * @param {NoErrorCallback<TResult>} [userCallback] - Optional caller-provided callback. The method will not return a Promise if specified.
- * @returns {Promise<TResult>} Promise with the result, it never rejects.
+ * @returns {Promise<TResult> | void} Promise with the result, it never rejects or void if user's callback provided
  * @template TResult - Type of the result value.
  * @example
  * // When method takes only callback as the parameter like example:
@@ -166,7 +168,7 @@ export function noErrorCallbackToPromise<TResult>(callBackOperation: (callback: 
  * @param {(callback: DoubleValueCallback<TResult1, TResult2>) => void} callBackOperation - Function taking callback with two return values and an error as a parameter.
  * @param {(result1: TResult1, result2: TResult2) => TPromiseResult} packResults - Function converting two return values from the callback to a single object of {TPromiseResult} type.
  * @param {DoubleValueCallback<TResult1, TResult2>} [userCallback] - Optional caller-provided callback. The method will not return a Promise if specified.
- * @returns {Promise<TResult>} Promise with result of TResult type.
+ * @returns {Promise<TResult> | void} Promise with result of TResult type or void if user's callback provided
  * @template TResult1 - Type of the first result value.
  * @template TResult2 - Type of the second result value.
  * @template TPromiseResult - Type of the Promise result value.
@@ -224,10 +226,10 @@ export function doubleValueCallbackToPromise<TResult1, TResult2, TPromiseResult>
  * Otherwise, it executes the method with userCallback as the callback.
  * Promise cannot return multiple objects so the return values have to be packed into a single object.
  *
- * @param {(callback: DoubleValueCallback<TResult1, TResult2>) => void} callBackOperation - Function taking callback with two return values and an error as a parameter.
+ * @param {(callback: DoubleValueCallback<TResult1, TResult2>) => void} callbackOperation - Function taking callback with two return values and an error as a parameter.
  * @param {(result1: TResult1, result2: TResult2) => TPromiseResult} packResults - Function converting two return values from the callback to a single object of {TPromiseResult} type.
  * @param {TripleValueCallback<TResult1, TResult2>} [userCallback] - Optional caller-provided callback. The method will not return a Promise if specified.
- * @returns {Promise<TResult>} Promise with result of TResult type.
+ * @returns {Promise<TResult> | void} Promise with result of TResult type or void if user's callback provided.
  * @template TResult1 - Type of the first result value.
  * @template TResult2 - Type of the second result value.
  * @template TPromiseResult - Type of the Promise result value.
@@ -248,7 +250,7 @@ export function doubleValueCallbackToPromise<TResult1, TResult2, TPromiseResult>
  * tripleValueCallbackToPromise((_callback) => foo(param, _callback), pack).then(result => { console.log(result); }, err => { console.error(error); });
  */
 export function tripleValueCallbackToPromise<TResult1, TResult2, TPromiseResult>(
-  callBackOperation: (callback: TripleValueCallback<TResult1, TResult2>) => void,
+  callbackOperation: (callback: TripleValueCallback<TResult1, TResult2>) => void,
   packResults: (result1: TResult1, result2: TResult2) => TPromiseResult,
   userCallback?: TripleValueCallback<TResult1, TResult2>): Promise<TPromiseResult> | void {
   if (userCallback) {
@@ -256,12 +258,12 @@ export function tripleValueCallbackToPromise<TResult1, TResult2, TPromiseResult>
       throw new TypeError('Callback has to be a Function');
     }
 
-    return callBackOperation(userCallback);
+    return callbackOperation(userCallback);
   }
 
   return new Promise<TPromiseResult>((resolve, reject) => {
     try {
-      callBackOperation((error, result1, result2) => {
+      callbackOperation((error, result1, result2) => {
         if (error) {
           reject(error);
         }
@@ -273,3 +275,21 @@ export function tripleValueCallbackToPromise<TResult1, TResult2, TPromiseResult>
     }
   });
 }
+
+/**
+ * @private
+ *
+ * Converts method taking callback with two result values (response body and HTTP response itself)
+ * and an error as a parameter to method returning a Promise if userCallback is not specified.
+ * Otherwise, it executes the method with userCallback as the callback.
+ *
+ * @param {(callback: HttpResponseCallback<TResult>) => void} callbackOperation - Function taking callback with two return values (response body and HTTP response) and an error as a parameter.
+ * @param {HttpResponseCallback<TResult>} callback - Optional caller-provided callback. The method will not return a Promise if specified.
+ * @returns {Promise<TResult> | void} Promise with result of TResult type or void if user's callback provided
+ * @template TResult - Type of the response body result.
+ */
+export function httpCallbackToPromise<TResult>(
+  callbackOperation: (callback: HttpResponseCallback<TResult>) => void,
+  callback?: HttpResponseCallback<TResult>): Promise<ResultWithHttpResponse<TResult>> | void {
+  return tripleValueCallbackToPromise(callbackOperation, (b, r) => createResultWithHttpResponse(b, r), callback)
+};
