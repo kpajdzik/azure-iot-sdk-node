@@ -7,13 +7,13 @@ import * as dbg from 'debug';
 const debug = dbg('azure-iot-device:ModuleClient');
 
 import * as fs from 'fs';
-import { results, Message, RetryOperation, ConnectionString, AuthenticationProvider, Callback, callbackToPromise, doubleValueCallbackToPromise } from 'azure-iot-common';
+import { results, Message, RetryOperation, ConnectionString, AuthenticationProvider, Callback, callbackToPromise } from 'azure-iot-common';
 import { InternalClient, DeviceTransport } from './internal_client';
 import { errors } from 'azure-iot-common';
 import { SharedAccessKeyAuthenticationProvider } from './sak_authentication_provider';
 import { SharedAccessSignatureAuthenticationProvider } from './sas_authentication_provider';
 import { IotEdgeAuthenticationProvider } from './iotedge_authentication_provider';
-import { MethodParams, MethodCallback, MethodClient, DeviceMethodRequest, DeviceMethodResponse, MethodResult, DeviceMethodExchange, createDeviceMethodExchange } from './device_method';
+import { MethodParams, MethodCallback, MethodClient, DeviceMethodRequest, DeviceMethodResponse, MethodResult } from './device_method';
 import { DeviceClientOptions } from './interfaces';
 import { DoubleValueCallback } from 'azure-iot-common/lib/promise_utils';
 
@@ -210,13 +210,10 @@ export class ModuleClient extends InternalClient {
    * Registers a callback for a method named `methodName`.
    *
    * @param methodName Name of the method that will be handled by the callback
-   * @param [callback] Optional function that shall be called whenever a method request for the method called `methodName` is received.
-   * @returns {Promise<DeviceMethodExchange> | void} Promise if no callback function was passed, void otherwise.
+   * @param callback Function that shall be called whenever a method request for the method called `methodName` is received.
    */
-  onMethod(methodName: string, callback?: DoubleValueCallback<DeviceMethodRequest, DeviceMethodResponse>): Promise<DeviceMethodExchange> | void {
-    return doubleValueCallbackToPromise((_callback) => {
-      this._onDeviceMethod(methodName, _callback);
-    }, createDeviceMethodExchange, callback);
+  onMethod(methodName: string, callback: DoubleValueCallback<DeviceMethodRequest, DeviceMethodResponse>): void {
+      this._onDeviceMethod(methodName, callback);
   }
 
   /**

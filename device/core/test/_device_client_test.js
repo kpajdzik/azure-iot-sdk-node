@@ -390,19 +390,20 @@ describe('Device Client', function () {
       });
     });
 
-    // Tests_SRS_NODE_DEVICE_CLIENT_13_022: [ onDeviceMethod returns a Promise if callback is falsy. ]
+    // Tests_SRS_NODE_DEVICE_CLIENT_13_022: [ onDeviceMethod shall throw a ReferenceError if callback is falsy. ]
     [undefined, null].forEach(function (callback) {
-      it('returns a Promise when callback is "' + callback + '"', function () {
+      it('throws ReferenceError when callback is "' + callback + '"', function () {
         var transport = new FakeMethodTransport();
         var client = new Client(transport);
-        const promise = client.onDeviceMethod('doSomeTests', callback);
-        assert.typeOf(promise, "Promise");
+        assert.throws(function () {
+          client.onDeviceMethod('doSomeTests', callback);
+        }, ReferenceError);
       });
     });
 
     // Tests_SRS_NODE_DEVICE_CLIENT_13_025: [ onDeviceMethod shall throw a TypeError if callback is not a Function. ]
     ['not_a_function', 42].forEach(function (callback) {
-      it('throws ReferenceError when callback is "' + callback + '"', function () {
+      it('throws TypeError when callback is "' + callback + '"', function () {
         var transport = new FakeMethodTransport();
         var client = new Client(transport);
         assert.throws(function () {

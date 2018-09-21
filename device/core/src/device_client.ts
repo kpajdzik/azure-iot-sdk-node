@@ -7,13 +7,13 @@ import { Stream } from 'stream';
 import * as dbg from 'debug';
 const debug = dbg('azure-iot-device:InternalClient');
 
-import { AuthenticationProvider, RetryOperation, ConnectionString, results, Callback, ErrorCallback, callbackToPromise, doubleValueCallbackToPromise, DoubleValueCallback } from 'azure-iot-common';
+import { AuthenticationProvider, RetryOperation, ConnectionString, results, Callback, ErrorCallback, callbackToPromise, DoubleValueCallback } from 'azure-iot-common';
 import { InternalClient, DeviceTransport } from './internal_client';
 import { BlobUploadClient } from './blob_upload';
 import { SharedAccessSignatureAuthenticationProvider } from './sas_authentication_provider';
 import { X509AuthenticationProvider } from './x509_authentication_provider';
 import { SharedAccessKeyAuthenticationProvider } from './sak_authentication_provider';
-import { DeviceMethodRequest, DeviceMethodResponse, DeviceMethodExchange, createDeviceMethodExchange } from './device_method';
+import { DeviceMethodRequest, DeviceMethodResponse } from './device_method';
 
 function safeCallback(callback?: (err?: Error, result?: any) => void, error?: Error, result?: any): void {
   if (callback) callback(error, result);
