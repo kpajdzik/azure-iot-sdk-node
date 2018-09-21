@@ -12,7 +12,7 @@ import { Amqp } from './amqp';
 import { DeviceMethod } from './device_method';
 import { RestApiClient } from 'azure-iot-http-base';
 import { DeviceMethodParams, IncomingMessageCallback, createResultWithIncomingMessage, ResultWithIncomingMessage } from './interfaces';
-import { tripleValueCallbackToPromise } from 'azure-iot-common/lib/promise_utils';
+import { tripleValueCallbackToPromise } from 'azure-iot-common';
 import { IncomingMessage } from 'http';
 
 // tslint:disable-next-line:no-var-requires
