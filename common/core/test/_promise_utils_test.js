@@ -9,6 +9,7 @@ var errorCallbackToPromise = require('../lib/promise_utils').errorCallbackToProm
 var noErrorCallbackToPromise = require('../lib/promise_utils').noErrorCallbackToPromise;
 var doubleValueCallbackToPromise = require('../lib/promise_utils').doubleValueCallbackToPromise;
 var tripleValueCallbackToPromise = require('../lib/promise_utils').tripleValueCallbackToPromise;
+var httpCallbackToPromise = require('../lib/promise_utils').httpCallbackToPromise;
 
 describe('PromiseUtils', () => {
     describe('#callbackToPromise', () => {
@@ -39,6 +40,15 @@ describe('PromiseUtils', () => {
             }, TypeError);
 
             done();
+        });
+
+        it('throws when an Error is thrown', function() {
+            const functionWithCallback = (_) => {
+                throw new Error();
+            };
+
+            callbackToPromise(functionWithCallback)
+                .then(res => assert.fail(res), err => assert.isDefined(err));
         });
 
         it('returns undefined result for empty callback', function (done) {
@@ -333,7 +343,7 @@ describe('PromiseUtils', () => {
             const userCallback = 42;
 
             assert.throws(function() {
-                tripleValueCallbackToPromise(functionWithCallback, undefined, userCallback);
+                doubleValueCallbackToPromise(functionWithCallback, undefined, userCallback);
                 done("It should never reach this code")
             }, TypeError);
 
@@ -516,6 +526,40 @@ describe('PromiseUtils', () => {
             } catch (error) {
                 assert.fail(error);
             }
+        });
+    });
+
+    describe('#httpCallbackToPromise', function() {
+        it('executes user callback when passed', function (done) {
+            const error = new Error('sample error');
+            const httpResponse = { body: "result" };
+            const functionWithCallback = (callback) => {
+                callback(error, "result", httpResponse);
+            };
+
+            const callback = (err, result1, result2) => {
+                assert.equal(result1, "result");
+                assert.equal(result2, httpResponse);
+                assert.equal(err, error);
+                done();
+            };
+
+            const promise = httpCallbackToPromise(functionWithCallback, callback);
+            assert.isUndefined(promise);
+        });
+
+        it('returns a promise when no callback specified', function (done) {
+            const httpResponse = { body: "result" };
+            const functionWithCallback = (callback) => {
+                callback(undefined, "result", httpResponse);
+            };
+
+            const promise = httpCallbackToPromise(functionWithCallback);
+            promise.then(res => {
+                assert.equal(res.responseBody, "result");
+                assert.equal(res.httpResponse, httpResponse);
+                done();
+            });
         });
     });
 });
