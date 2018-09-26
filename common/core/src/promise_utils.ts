@@ -2,7 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 'use strict';
 
-import { ResultWithHttpResponse, createResultWithHttpResponse } from './results';
+import { ResultWithHttpResponse } from './results';
 
 /**
  * Defines type describing callback with two results.
@@ -293,3 +293,10 @@ export function httpCallbackToPromise<TResult>(
   callback?: HttpResponseCallback<TResult>): Promise<ResultWithHttpResponse<TResult>> | void {
   return tripleValueCallbackToPromise(callbackOperation, (b, r) => createResultWithHttpResponse(b, r), callback);
 };
+
+/**
+ * @private
+ */
+export function createResultWithHttpResponse<TResult>(responseBody: TResult, httpResponse: any): ResultWithHttpResponse<TResult> {
+  return { responseBody: responseBody, httpResponse: httpResponse };
+}

@@ -164,7 +164,3 @@ export type ResultWithHttpResponse<TResult> = {
   responseBody: TResult;
   httpResponse: any;
 };
-
-export function createResultWithHttpResponse<TResult>(responseBody: TResult, httpResponse: any): ResultWithHttpResponse<TResult> {
-    return { responseBody: responseBody, httpResponse: httpResponse };
-}

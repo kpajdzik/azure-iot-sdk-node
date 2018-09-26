@@ -3,17 +3,11 @@
 
 'use strict';
 
-import { errors, SharedAccessSignature, ConnectionString } from 'azure-iot-common';
+import { errors, SharedAccessSignature, ConnectionString, httpCallbackToPromise } from 'azure-iot-common';
 import { RestApiClient } from 'azure-iot-http-base';
-import { QuerySpecification, Query, QueryCallback } from './query';
+import { QuerySpecification, Query, QueryResult } from './query';
 import { IndividualEnrollment, EnrollmentGroup, DeviceRegistrationState, BulkEnrollmentOperation, BulkEnrollmentOperationResult } from './interfaces';
-import { ErrorCallback, TripleValueCallback, tripleValueCallbackToPromise, errorCallbackToPromise } from 'azure-iot-common/lib/promise_utils';
-import { ResultWithHttpResponse, createResultWithHttpResponse } from 'azure-iot-common/lib/results';
-
-const createIndividualEnrollmentWithHttpResponse = (enrollment, httpRequest) => { return createResultWithHttpResponse(enrollment as IndividualEnrollment, httpRequest); };
-const createEnrollmentGroupWithHttpResponse = (group, httpRequest) => { return createResultWithHttpResponse(group as EnrollmentGroup, httpRequest); };
-const createDeviceRegistrationStateWithHttpResponse = (state, httpRequest) => { return createResultWithHttpResponse(state as DeviceRegistrationState, httpRequest); };
-const createBulkEnrollmentOperationResultWithHttpResponse = (result, httpRequest) => { return createResultWithHttpResponse(result as BulkEnrollmentOperationResult, httpRequest); };
+import { ErrorCallback, errorCallbackToPromise, HttpResponseCallback, ResultWithHttpResponse } from 'azure-iot-common';
 
 // tslint:disable-next-line:no-var-requires
 const packageJson = require('../package.json');
@@ -52,10 +46,10 @@ export class ProvisioningServiceClient {
    * @param {function} [callback] Invoked upon completion of the operation.
    * @returns {Promise<ResultWithHttpResponse<IndividualEnrollment>> | void} Promise if no callback function was passed, void otherwise.
    */
-  public createOrUpdateIndividualEnrollment(enrollment: IndividualEnrollment, callback?: TripleValueCallback<IndividualEnrollment, any>): Promise<ResultWithHttpResponse<IndividualEnrollment>> | void {
-    return tripleValueCallbackToPromise((_callback) => {
+  public createOrUpdateIndividualEnrollment(enrollment: IndividualEnrollment, callback?: HttpResponseCallback<IndividualEnrollment>): Promise<ResultWithHttpResponse<IndividualEnrollment>> | void {
+    return httpCallbackToPromise((_callback) => {
       this._createOrUpdate(this._enrollmentsPrefix, enrollment, _callback);
-    }, createIndividualEnrollmentWithHttpResponse, callback);
+    }, callback);
   }
 
   /**
@@ -84,10 +78,10 @@ export class ProvisioningServiceClient {
    * @param {function} [getCallback] Invoked upon completion of the operation.
    * @returns {Promise<ResultWithHttpResponse<IndividualEnrollment>> | void} Promise if no callback function was passed, void otherwise.
    */
-  public getIndividualEnrollment(id: string, getCallback?: TripleValueCallback<IndividualEnrollment, any>): Promise<ResultWithHttpResponse<IndividualEnrollment>> | void {
-    return tripleValueCallbackToPromise((_callback) => {
+  public getIndividualEnrollment(id: string, getCallback?: HttpResponseCallback<IndividualEnrollment>): Promise<ResultWithHttpResponse<IndividualEnrollment>> | void {
+    return httpCallbackToPromise((_callback) => {
       this._get(this._enrollmentsPrefix, id, getCallback);
-    }, createIndividualEnrollmentWithHttpResponse, getCallback);
+    }, getCallback);
   }
 
   /**
@@ -107,10 +101,10 @@ export class ProvisioningServiceClient {
    * @param {function} [callback] Invoked upon completion of the operation.
    * @returns {Promise<ResultWithHttpResponse<DeviceRegistrationState>> | void} Promise if no callback function was passed, void otherwise.
    */
-  public getDeviceRegistrationState(id: string, callback?: TripleValueCallback<DeviceRegistrationState, any>): Promise<ResultWithHttpResponse<DeviceRegistrationState>> | void {
-    return tripleValueCallbackToPromise((_callback) => {
+  public getDeviceRegistrationState(id: string, callback?: HttpResponseCallback<DeviceRegistrationState>): Promise<ResultWithHttpResponse<DeviceRegistrationState>> | void {
+    return httpCallbackToPromise((_callback) => {
       this._get(this._registrationsPrefix, id, _callback);
-    }, createDeviceRegistrationStateWithHttpResponse, callback);
+    }, callback);
   }
 
   /**
@@ -120,10 +114,10 @@ export class ProvisioningServiceClient {
    * @param {function} [callback]      Invoked upon completion of the operation.
    * @returns {Promise<ResultWithHttpResponse<DeviceRegistrationState>> | void} Promise if no callback function was passed, void otherwise.
    */
-  public createOrUpdateEnrollmentGroup(enrollmentGroup: EnrollmentGroup, callback?: TripleValueCallback<EnrollmentGroup, any>): Promise<ResultWithHttpResponse<EnrollmentGroup>> | void {
-    return tripleValueCallbackToPromise((_callback) => {
+  public createOrUpdateEnrollmentGroup(enrollmentGroup: EnrollmentGroup, callback?: HttpResponseCallback<EnrollmentGroup>): Promise<ResultWithHttpResponse<EnrollmentGroup>> | void {
+    return httpCallbackToPromise((_callback) => {
       this._createOrUpdate(this._enrollmentGroupsPrefix, enrollmentGroup, _callback);
-    }, createEnrollmentGroupWithHttpResponse, callback);
+    }, callback);
   }
 
   /**
@@ -152,10 +146,10 @@ export class ProvisioningServiceClient {
    * @param {function} [getCallback] Invoked upon completion of the operation.
    * @returns {ResultWithHttpResponse<EnrollmentGroup> | void} Promise if no callback function was passed, void otherwise.
    */
-  public getEnrollmentGroup(id: string, getCallback?: TripleValueCallback<EnrollmentGroup, any>): Promise<ResultWithHttpResponse<EnrollmentGroup>> | void {
-    return tripleValueCallbackToPromise((_callback) => {
+  public getEnrollmentGroup(id: string, getCallback?: HttpResponseCallback<EnrollmentGroup>): Promise<ResultWithHttpResponse<EnrollmentGroup>> | void {
+    return httpCallbackToPromise((_callback) => {
       this._get(this._enrollmentGroupsPrefix, id, _callback);
-    }, createEnrollmentGroupWithHttpResponse, getCallback);
+    }, getCallback);
   }
 
   /**
@@ -188,8 +182,8 @@ export class ProvisioningServiceClient {
    * @param {object}   bulkEnrollmentOperation An object that specifies the single kind of CRUD operations on the array of IndividualEnrollment objects that are also part of the object.
    * @param {function} callback      Invoked upon completion of the operation.
    */
-  public runBulkEnrollmentOperation(bulkEnrollmentOperation: BulkEnrollmentOperation, callback?: TripleValueCallback<BulkEnrollmentOperationResult, any>): Promise<ResultWithHttpResponse<BulkEnrollmentOperationResult>> | void {
-    return tripleValueCallbackToPromise((_callback) => {
+  public runBulkEnrollmentOperation(bulkEnrollmentOperation: BulkEnrollmentOperation, callback?: HttpResponseCallback<BulkEnrollmentOperationResult>): Promise<ResultWithHttpResponse<BulkEnrollmentOperationResult>> | void {
+    return httpCallbackToPromise((_callback) => {
       /*Codes_SRS_NODE_PROVISIONING_SERVICE_CLIENT_06_038: [The `runBulkEnrollmentOperation` method shall throw `ReferenceError` if the `bulkEnrollmentOperation` argument is falsy.] */
       if (!bulkEnrollmentOperation) {
         throw new ReferenceError('Required bulkEnrollmentOperation parameter was falsy when calling runBulkEnrollmentOperation.');
@@ -219,7 +213,7 @@ export class ProvisioningServiceClient {
           }
         }
       });
-    }, createBulkEnrollmentOperationResultWithHttpResponse, callback);
+    }, callback);
   }
 
   /**
@@ -241,7 +235,7 @@ export class ProvisioningServiceClient {
     }, deleteCallback);
   }
 
-  private _getEnrollFunc(prefix: string, querySpecification: QuerySpecification, pageSize: number): (continuationToken: string, done: QueryCallback) => void {
+  private _getEnrollFunc(prefix: string, querySpecification: QuerySpecification, pageSize: number): (continuationToken: string, done: HttpResponseCallback<QueryResult>) => void {
     return (continuationToken, done) => {
       const path = prefix + 'query' + this._versionQueryString();
 
@@ -519,3 +513,5 @@ export class ProvisioningServiceClient {
   }
 
 }
+
+export type _tsLintWorkaround = { query: QueryResult, results: BulkEnrollmentOperationResult };

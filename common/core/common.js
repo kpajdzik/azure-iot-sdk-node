@@ -31,9 +31,10 @@ module.exports = {
   errorCallbackToPromise: require('./lib/promise_utils').errorCallbackToPromise,
   noErrorCallbackToPromise: require('./lib/promise_utils').noErrorCallbackToPromise,
   tripleValueCallbackToPromise: require('./lib/promise_utils').tripleValueCallbackToPromise,
-  httpCallbackToPromise: require('./lib/promise_utils').htthttpCallbackToPromise,
+  httpCallbackToPromise: require('./lib/promise_utils').httpCallbackToPromise,
   Callback: require('./lib/promise_utils').Callback,
   ErrorCallback: require('./lib/promise_utils').ErrorCallback,
   DoubleValueCallback: require('./lib/promise_utils').DoubleValueCallback,
+  TripleValueCallback: require('./lib/promise_utils').TripleValueCallback,
   HttpResponseCallback: require('./lib/promise_utils').HttpResponseCallback
 };

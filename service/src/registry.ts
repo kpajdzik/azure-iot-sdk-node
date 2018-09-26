@@ -5,16 +5,15 @@
 
 import { errors, endpoint, SharedAccessSignature, ResultWithHttpResponse } from 'azure-iot-common';
 import { Agent } from 'https';
-import { RestApiClient, Http } from 'azure-iot-http-base';
+import { RestApiClient } from 'azure-iot-http-base';
 import * as ConnectionString from './connection_string';
 import { Twin } from './twin';
 import { Query } from './query';
 import { Configuration, ConfigurationContent } from './configuration';
 import { Device } from './device';
-import { IncomingMessageCallback, createResultWithIncomingMessage, ResultWithIncomingMessage } from './interfaces';
+import { IncomingMessageCallback } from './interfaces';
 import { Module } from './module';
-import { TripleValueCallback, Callback, HttpResponseCallback, tripleValueCallbackToPromise, callbackToPromise, httpCallbackToPromise } from 'azure-iot-common/lib/promise_utils';
-import { createResultWithHttpResponse } from 'azure-iot-common/lib/results';
+import { TripleValueCallback, Callback, HttpResponseCallback, callbackToPromise, httpCallbackToPromise } from 'azure-iot-common';
 
 // tslint:disable-next-line:no-var-requires
 const packageJson = require('../package.json');
@@ -73,8 +72,8 @@ export class Registry {
    *                                object useful for logging or debugging.
    * @returns {Promise<ResultWithHttpResponse<Device>> | void} Promise if no callback function was passed, void otherwise.
    */
-  create(deviceInfo: Registry.DeviceDescription, done?: TripleValueCallback<Device, any>): Promise<ResultWithHttpResponse<Device>> | void {
-    return tripleValueCallbackToPromise((_callback) => {
+  create(deviceInfo: Registry.DeviceDescription, done?: HttpResponseCallback<Device>): Promise<ResultWithHttpResponse<Device>> | void {
+    return httpCallbackToPromise((_callback) => {
       if (!deviceInfo) {
         /*Codes_SRS_NODE_IOTHUB_REGISTRY_07_001: [The `create` method shall throw `ReferenceError` if the `deviceInfo` argument is falsy. **]*/
         throw new ReferenceError('deviceInfo cannot be \'' + deviceInfo + '\'');
@@ -107,7 +106,7 @@ export class Registry {
           _callback(null, new Device(device), httpResponse);
         }
       });
-    }, (d, r) => { return createResultWithHttpResponse(d, r); }, done);
+    }, done);
   }
 
   /**
@@ -1219,9 +1218,9 @@ export class Registry {
       return this._removeModule(moduleOrDeviceId, doneOrModuleId, done);
     }
 
-    return tripleValueCallbackToPromise((_callback) => {
+    return httpCallbackToPromise((_callback) => {
       this._removeModule(moduleOrDeviceId, doneOrModuleId, _callback);
-    }, (r, h) => createResultWithHttpResponse(r, h));
+    });
   }
 
   private _bulkOperation(devices: Registry.DeviceDescription[], done: IncomingMessageCallback<any>): void {

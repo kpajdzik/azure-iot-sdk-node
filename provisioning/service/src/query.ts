@@ -4,9 +4,7 @@
 'use strict';
 
 import { IndividualEnrollment, EnrollmentGroup, DeviceRegistrationState } from './interfaces';
-import { tripleValueCallbackToPromise, ResultWithHttpResponse } from 'azure-iot-common';
-import { TripleValueCallback } from 'azure-iot-common/lib/promise_utils';
-import { createResultWithHttpResponse } from 'azure-iot-common/lib/results';
+import { ResultWithHttpResponse, HttpResponseCallback, httpCallbackToPromise } from 'azure-iot-common';
 
 /**
  * The query result.
@@ -28,7 +26,7 @@ export interface QuerySpecification {
   query: string;
 }
 
-export type QueryCallback = TripleValueCallback<QueryResult, any>;
+export type QueryCallback = HttpResponseCallback<QueryResult>;
 
 export class Query {
   continuationToken: string;
@@ -56,7 +54,7 @@ export class Query {
   next(continuationTokenOrCallback: string | QueryCallback, done?: QueryCallback): Promise<ResultWithHttpResponse<QueryResult>> | void {
     const callback = done || (continuationTokenOrCallback instanceof Function ? continuationTokenOrCallback : undefined);
 
-    return tripleValueCallbackToPromise((_callback) => {
+    return httpCallbackToPromise((_callback) => {
       let actualContinuationToken = this.continuationToken;
       let actualCallback: QueryCallback;
 
@@ -78,6 +76,6 @@ export class Query {
           actualCallback(null, result, response);
         }
       });
-    }, (q: QueryResult, h) => createResultWithHttpResponse(q, h), callback);
+    }, callback);
   }
 }
