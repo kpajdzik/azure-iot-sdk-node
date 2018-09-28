@@ -52,25 +52,22 @@ export class Query {
    * @returns {Promise<ResultWithIncomingMessage<any>> | void} Promise if no callback function was passed, void otherwise.
    */
   next(continuationTokenOrCallback: string | IncomingMessageCallback<any>, done?: IncomingMessageCallback<any>): Promise<ResultWithIncomingMessage<any>> | void {
-    const callback = done || (continuationTokenOrCallback instanceof Function ? continuationTokenOrCallback : undefined);
+    let actualContinuationToken = this.continuationToken;
+    let actualCallback: IncomingMessageCallback<any>;
+    /*Codes_SRS_NODE_SERVICE_QUERY_16_016: [If `continuationToken` is a function and `done` is undefined the `next` method shall assume that `continuationToken` is actually the callback and us it as such (see requirements associated with the `done` parameter)]*/
+    if (typeof continuationTokenOrCallback === 'function' && !done) {
+      actualCallback = continuationTokenOrCallback as IncomingMessageCallback<any>;
+    } else {
+      /*Codes_SRS_NODE_SERVICE_QUERY_16_017: [the `next` method shall use the `continuationToken` passed as argument instead of its own property `Query.continuationToken` if it's not falsy.]*/
+      actualContinuationToken = continuationTokenOrCallback as string;
+      actualCallback = done as IncomingMessageCallback<any>;
+    }
 
     return tripleValueCallbackToPromise((_callback) => {
-      let actualContinuationToken = this.continuationToken;
-      let actualCallback: IncomingMessageCallback<any>;
-
-      /*Codes_SRS_NODE_SERVICE_QUERY_16_016: [If `continuationToken` is a function and `done` is undefined the `next` method shall assume that `continuationToken` is actually the callback and us it as such (see requirements associated with the `done` parameter)]*/
-      if (typeof continuationTokenOrCallback === 'function' && !_callback) {
-        actualCallback = continuationTokenOrCallback as IncomingMessageCallback<any>;
-      } else {
-        /*Codes_SRS_NODE_SERVICE_QUERY_16_017: [the `next` method shall use the `continuationToken` passed as argument instead of its own property `Query.continuationToken` if it's not falsy.]*/
-        actualContinuationToken = continuationTokenOrCallback as string;
-        actualCallback = _callback as IncomingMessageCallback<any>;
-      }
-
       this._executeQueryFn(actualContinuationToken, (err, result, response) => {
         if (err) {
           /*Codes_SRS_NODE_SERVICE_QUERY_16_008: [The `next` method shall call the `_callback` callback with a single argument that is an instance of the standard Javascript `Error` object if the request failed.]*/
-          actualCallback(err);
+          _callback(err);
         } else {
           /*Codes_SRS_NODE_SERVICE_QUERY_16_006: [The `next` method shall set the `Query.continuationToken` property to the `continuationToken` value of the query result.]*/
           this.continuationToken = response.headers['x-ms-continuation'] as string;
@@ -80,10 +77,10 @@ export class Query {
           this.hasMoreResults = this.continuationToken !== undefined;
 
           /*Codes_SRS_NODE_SERVICE_QUERY_16_007: [The `next` method shall call the `_callback` callback with a `null` error object, the results of the query and the response of the underlying transport if the request was successful.]*/
-          actualCallback(null, result, response);
+          _callback(null, result, response);
         }
       });
-    }, (r, m) => { return createResultWithIncomingMessage(r, m); }, callback);
+    }, (r, m) => { return createResultWithIncomingMessage(r, m); }, actualCallback);
   }
 
   /**
@@ -95,15 +92,13 @@ export class Query {
    * @returns {Promise<ResultWithIncomingMessage<Twin[]>> | void} Promise if no callback function was passed, void otherwise.
    */
   nextAsTwin(continuationToken: string | IncomingMessageCallback<Twin[]>, done?: IncomingMessageCallback<Twin[]>): Promise<ResultWithIncomingMessage<Twin[]>> | void {
-    const doneCallback: IncomingMessageCallback<Twin[]> = continuationToken instanceof Function ? continuationToken : done;
+    /*Codes_SRS_NODE_SERVICE_QUERY_16_016: [If `continuationToken` is a function and `_callback` is undefined the `next` method shall assume that `continuationToken` is actually the callback and us it as such (see requirements associated with the `done` parameter)]*/
+    if (typeof continuationToken === 'function' && !done) {
+      done = continuationToken;
+      continuationToken = null;
+    }
 
     return tripleValueCallbackToPromise((_callback) => {
-      /*Codes_SRS_NODE_SERVICE_QUERY_16_016: [If `continuationToken` is a function and `_callback` is undefined the `next` method shall assume that `continuationToken` is actually the callback and us it as such (see requirements associated with the `done` parameter)]*/
-      if (typeof continuationToken === 'function' && !_callback) {
-        _callback = continuationToken;
-        continuationToken = null;
-      }
-
       let ct = continuationToken || this.continuationToken;
 
       this.next(ct, (err, result, response) => {
@@ -123,6 +118,6 @@ export class Query {
           }
         }
       });
-    }, (r, m) => { return createResultWithIncomingMessage(r, m); }, doneCallback);
+    }, (r, m) => { return createResultWithIncomingMessage(r, m); }, done);
   }
 }

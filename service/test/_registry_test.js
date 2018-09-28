@@ -878,7 +878,7 @@ describe('Registry', function() {
       });
 
       /*Tests_SRS_NODE_IOTHUB_REGISTRY_06_014: [The `addDevices` method shall throw `ArgumentError` if devices.length == 0  or is greater than 100.]*/
-      [zeroDevices,oneHundredOneDevices].forEach(function(badDevices) {
+      [zeroDevices, oneHundredOneDevices].forEach(function(badDevices) {
         testWrongLengthArg('addDevices', 'devices', badDevices, errors.ArgumentError);
       });
 
@@ -1061,8 +1061,8 @@ describe('Registry', function() {
     testErrorCallback('getModuleTwin', 'deviceId', 'moduleId');
 
     /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_001: [The `getModuleTwin` method shall throw a `ReferenceError` exception if `deviceId` or `moduleId` is falsy. ]*/
-    testAllFalsyArgValues('getModuleTwin', 'deviceId', 0, 'deviceId', 'moduleId', () => {});
-    testAllFalsyArgValues('getModuleTwin', 'moduleId', 1, 'deviceId', 'moduleId', () => {});
+    testAllFalsyArgValues('getModuleTwin', 'deviceId', 0, 'deviceId', 'moduleId');
+    testAllFalsyArgValues('getModuleTwin', 'moduleId', 1, 'deviceId', 'moduleId');
 
     /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_002: [The `getModuleTwin` method shall construct an HTTP request using information supplied by the caller, as follows:
     ```
