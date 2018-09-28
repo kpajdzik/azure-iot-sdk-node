@@ -623,7 +623,7 @@ export class Registry {
    * @returns {Promise<ResultWithHttpResponse<any>> | void} Promise if no callback function was passed, void otherwise.
    * @throws {ReferenceError}         If the deviceId, moduleId, patch, etag, or done argument is falsy.
    */
-  updateModuleTwin(deviceId: string, moduleId: string, patch: any, etag: string, done: HttpResponseCallback<any>): Promise<ResultWithHttpResponse<any>> | void {
+  updateModuleTwin(deviceId: string, moduleId: string, patch: any, etag: string, done?: HttpResponseCallback<any>): Promise<ResultWithHttpResponse<any>> | void {
     return httpCallbackToPromise((_callback) => {
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_004: [The `updateModuleTwin` method shall throw a `ReferenceError` exception if `deviceId`, `moduleId`, `patch`, `etag`,or `done` is falsy. ]*/
       if (!deviceId) throw new ReferenceError('Argument \'deviceId\' cannot be falsy');
@@ -1045,7 +1045,7 @@ export class Registry {
    *
    * @throws {ReferenceError}     If the deviceId, moduleId, or done argument is falsy.
    */
-  getModule(deviceId: string, moduleId: string, done: HttpResponseCallback<Module>): Promise<ResultWithHttpResponse<Module>> | void {
+  getModule(deviceId: string, moduleId: string, done?: HttpResponseCallback<Module>): Promise<ResultWithHttpResponse<Module>> | void {
     return httpCallbackToPromise((_callback) => {
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_031: [The `getModule` method shall throw a `ReferenceError` exception if `deviceId`, `moduleId`, or `done` is falsy. ]*/
       if (!deviceId) throw new ReferenceError('Argument \'deviceId\' cannot be falsy');
