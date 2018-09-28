@@ -434,13 +434,15 @@ describe('Registry', function() {
       testFalsyArg('getTwin', 'deviceId', badDeviceId, ReferenceError);
     });
 
-    /*Tests_SRS_NODE_IOTHUB_REGISTRY_16_020: [The `getTwin` method shall throw a `ReferenceError` if the `done` parameter is falsy.]*/
+    /*Tests_SRS_NODE_IOTHUB_REGISTRY_16_020: [The `getTwin` method shall return a Promise if the `done` parameter is falsy.]*/
     [undefined, null].forEach(function(badCallback) {
-      it('throws a ReferenceError if \'done\' is \'' + badCallback + '\'', function() {
+      it('returns a Promise if \'done\' is \'' + badCallback + '\'', function() {
         var registry = new Registry({ host: 'host', sharedAccessSignature: 'sas' });
-        assert.throws(function(){
-          registry.getTwin('deviceId', badCallback);
-        }, ReferenceError);
+        const promise = registry.getTwin('deviceId', badCallback);
+        assert(promise instanceof Promise);
+        promise.then(res => 
+          assert.isDefined(res)
+        ).catch(err => done(err));
       });
     });
 
@@ -463,7 +465,7 @@ describe('Registry', function() {
     testUriEncoding('getTwin', 'test#', encodeURIComponent('test#'));
   });
 
-  describe('updateTwin', function() {
+  describe('#updateTwin', function() {
     /*Codes_SRS_NODE_IOTHUB_REGISTRY_16_044: [The `updateTwin` method shall throw a `ReferenceError` if the `deviceId` argument is `undefined`, `null` or an empty string.]*/
     [undefined, null, ''].forEach(function(badDeviceId) {
       it('throws a \'ReferenceError\' if \'deviceId\' is \'' + badDeviceId + '\'', function() {
@@ -1058,10 +1060,9 @@ describe('Registry', function() {
   describe ('#getModuleTwin', function() {
     testErrorCallback('getModuleTwin', 'deviceId', 'moduleId');
 
-    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_001: [The `getModuleTwin` method shall throw a `ReferenceError` exception if `deviceId`, `moduleId`, or `done` is falsy. ]*/
-    testAllFalsyArgValues('getModuleTwin', 'deviceId', 0, 'deviceId', 'moduleId');
-    testAllFalsyArgValues('getModuleTwin', 'moduleId', 1, 'deviceId', 'moduleId');
-    testAllFalsyArgValues('getModuleTwin', 'done', 2, 'deviceId', 'moduleId');
+    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_001: [The `getModuleTwin` method shall throw a `ReferenceError` exception if `deviceId` or `moduleId` is falsy. ]*/
+    testAllFalsyArgValues('getModuleTwin', 'deviceId', 0, 'deviceId', 'moduleId', () => {});
+    testAllFalsyArgValues('getModuleTwin', 'moduleId', 1, 'deviceId', 'moduleId', () => {});
 
     /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_002: [The `getModuleTwin` method shall construct an HTTP request using information supplied by the caller, as follows:
     ```
@@ -1102,12 +1103,11 @@ describe('Registry', function() {
   describe ('#updateModuleTwin', function() {
     testErrorCallback('updateModuleTwin', 'deviceId', 'moduleId', {}, 'etag');
 
-    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_004: [The `updateModuleTwin` method shall throw a `ReferenceError` exception if `deviceId`, `moduleId`, `patch`, `etag`, or `done` is falsy. ]*/
-    testAllFalsyArgValues('updateModuleTwin', 'deviceId', 0, 'deviceId', 'moduleId', {}, 'etag');
-    testAllFalsyArgValues('updateModuleTwin', 'moduleId', 1, 'deviceId', 'moduleId', {}, 'etag');
-    testAllFalsyArgValues('updateModuleTwin', 'patch', 2, 'deviceId', 'moduleId', {}, 'etag');
-    testAllFalsyArgValues('updateModuleTwin', 'etag', 3, 'deviceId', 'moduleId', {}, 'etag');
-    testAllFalsyArgValues('updateModuleTwin', 'done', 4, 'deviceId', 'moduleId', {}, 'etag');
+    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_004: [The `updateModuleTwin` method shall throw a `ReferenceError` exception if `deviceId`, `moduleId`, `patch` or `etag` is falsy. ]*/
+    testAllFalsyArgValues('updateModuleTwin', 'deviceId', 0, 'deviceId', 'moduleId', {}, 'etag', () => {});
+    testAllFalsyArgValues('updateModuleTwin', 'moduleId', 1, 'deviceId', 'moduleId', {}, 'etag', () => {});
+    testAllFalsyArgValues('updateModuleTwin', 'patch', 2, 'deviceId', 'moduleId', {}, 'etag', () => {});
+    testAllFalsyArgValues('updateModuleTwin', 'etag', 3, 'deviceId', 'moduleId', {}, 'etag', () => {});
 
     /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_005: [The `updateModuleTwin` method shall construct an HTTP request using information supplied by the caller, as follows:
     ```
@@ -1205,7 +1205,6 @@ describe('Registry', function() {
 
     /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_011: [The `getConfiguration` method shall throw a `ReferenceError` exception if `configurationId` is falsy. ]*/
     testAllFalsyArgValues('getConfiguration', 'configurationId', 0, 'id');
-    testAllFalsyArgValues('getConfiguration', 'done', 1, 'id');
 
     /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_012: [The `getConfiguration` method shall construct an HTTP request using information supplied by the caller, as follows:
     ```
@@ -1230,9 +1229,6 @@ describe('Registry', function() {
 
   describe ('#getConfigurations', function() {
     testErrorCallback('getConfigurations');
-
-    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_013: [The `getConfigurations` method shall throw a `ReferenceError` exception if `done` is falsy. ]*/
-    testAllFalsyArgValues('getConfigurations', 'done', 0);
 
     /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_014: [The `getConfigurations` method shall construct an HTTP request using information supplied by the caller, as follows:
     ```
@@ -1260,9 +1256,8 @@ describe('Registry', function() {
     testErrorCallback('updateConfiguration', fakeConfiguration, true);
     testErrorCallback('updateConfiguration', fakeConfiguration, false);
 
-    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_015: [The `updateConfiguration` method shall throw a `ReferenceError` exception if `configuration` or `done` is falsy. ]*/
+    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_015: [The `updateConfiguration` method shall throw a `ReferenceError` exception if `configuration` is falsy. ]*/
     testAllFalsyArgValues('updateConfiguration', 'configuration', 0, fakeConfiguration, false);
-    testAllFalsyArgValues('updateConfiguration', 'done', 2, fakeConfiguration, false);
 
     [undefined, null, ''].forEach(function(badValue) {
       /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_016: [The `updateConfiguration` method shall throw an `ArgumentError` exception if `forceUpdate` is falsy and `configuration.etag` is also falsy. ]*/
@@ -1391,9 +1386,8 @@ describe('Registry', function() {
   describe ('#addModule', function() {
     testErrorCallback('addModule', fakeModule);
 
-    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_026: [The `addModule` method shall throw a `ReferenceError` exception if `module` or `done` is falsy. ]*/
+    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_026: [The `addModule` method shall throw a `ReferenceError` exception if `module`s is falsy. ]*/
     testAllFalsyArgValues('addModule', 'module', 0, fakeModule);
-    testAllFalsyArgValues('addModule', 'done', 1, fakeModule);
 
     /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_027: [The `addModule` method shall throw an `ArgumentError` exception if `module.deviceId` or `module.moduleId` is falsy. ]*/
     [undefined, null, ''].forEach(function(badValue) {
@@ -1435,7 +1429,6 @@ describe('Registry', function() {
 
     /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_029: [The `getModulesOnDevice` method shall throw a `ReferenceError` exception if `deviceId` or `done` is falsy. ]*/
     testAllFalsyArgValues('getModulesOnDevice', 'deviceId', 0, 'deviceId');
-    testAllFalsyArgValues('getModulesOnDevice', 'done', 1, 'deviceId');
 
     /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_030: [The `getModulesOnDevice` method shall construct an HTTP request using information supplied by the caller, as follows:
     ```
@@ -1462,10 +1455,9 @@ describe('Registry', function() {
   describe ('#getModule', function() {
     testErrorCallback('getModule', 'deviceId', 'moduleId');
 
-    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_031: [The `getModule` method shall throw a `ReferenceError` exception if `deviceId`, `moduleId`, or `done` is falsy. ]*/
+    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_031: [The `getModule` method shall throw a `ReferenceError` exception if `deviceId` or `moduleId` is falsy. ]*/
     testAllFalsyArgValues('getModule', 'deviceId', 0, 'deviceId', 'moduleId');
     testAllFalsyArgValues('getModule', 'moduleId', 1, 'deviceId', 'moduleId');
-    testAllFalsyArgValues('getModule', 'done', 2, 'deviceId', 'moduleId');
 
     /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_032: [The `getModule` method shall construct an HTTP request using information supplied by the caller, as follows:
     ```
@@ -1491,9 +1483,8 @@ describe('Registry', function() {
   describe ('#updateModule', function() {
     testErrorCallback('updateModule', fakeModule);
 
-    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_033: [The `updateModule` method shall throw a `ReferenceError` exception if `module` or `done` is falsy. ]*/
-    testAllFalsyArgValues('updateModule', 'module', 0, fakeModule, true);
-    testAllFalsyArgValues('updateModule', 'done', 2, fakeModule, true);
+    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_033: [The `updateModule` method shall throw a `ReferenceError` exception if `module` is falsy. ]*/
+    testAllFalsyArgValues('updateModule', 'module', 0, fakeModule, true, () => {});
 
     [undefined, null, ''].forEach(function(badValue) {
       /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_034: [The `updateModule` method shall throw an `ArgumentError` exception if `module.deviceId` or `module.moduleId` is falsy. ]*/
@@ -1551,10 +1542,9 @@ describe('Registry', function() {
   describe ('#removeModule', function() {
     testErrorCallback('removeModule', 'deviceId', 'moduleId');
 
-    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_039: [The `removeModule` method shall throw a `ReferenceError` exception if `deviceId`, `moduleId`, or `done` is falsy. ]*/
-    testAllFalsyArgValues('removeModule', 'deviceId', 0, 'deviceId', 'moduleId');
-    testAllFalsyArgValues('removeModule', 'moduleId', 1, 'deviceId', 'moduleId');
-    testAllFalsyArgValues('removeModule', 'done', 2, 'deviceId', 'moduleId');
+    /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_039: [The `removeModule` method shall throw a `ReferenceError` exception if `deviceId` or `moduleId` is falsy. ]*/
+    testAllFalsyArgValues('removeModule', 'deviceId', 0, 'deviceId', 'moduleId', () => {});
+    testAllFalsyArgValues('removeModule', 'moduleId', 1, 'deviceId', 'moduleId', () => {});
 
     /*Tests_SRS_NODE_IOTHUB_REGISTRY_18_043: [The `removeModule` method shall throw an `ArgumentError` if `deviceId` or `moduleId` parameters are not strings.]*/
     it ('throws with non-string deviceId', function() {

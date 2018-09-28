@@ -78,7 +78,7 @@ describe('DeviceMethod', function() {
       it('throws a ReferenceError if \'deviceId\' is \'' + badDeviceId + '\'', function() {
         var method = new DeviceMethod({ methodName: 'foo', payload: null, responseTimeoutInSeconds: 42 }, {});
         assert.throws(function() {
-          method.invokeOn(badDeviceId, {}, function() {});
+          method.invokeOn(badDeviceId, function() {});
         }, ReferenceError);
       });
     });
@@ -90,14 +90,14 @@ describe('DeviceMethod', function() {
       it('throws a ReferenceError if \'deviceId\' is \'' + badArg + '\'', function() {
         var method = new DeviceMethod({ methodName: 'foo', payload: null, responseTimeoutInSeconds: 42 }, {});
         assert.throws(function() {
-          method.invokeOnModule(badArg, 'moduleId', {}, function() {});
+          method.invokeOnModule(badArg, 'moduleId', function() {});
         }, ReferenceError);
       });
 
       it('throws a ReferenceError if \'moduleId\' is \'' + badArg + '\'', function() {
         var method = new DeviceMethod({ methodName: 'foo', payload: null, responseTimeoutInSeconds: 42 }, {});
         assert.throws(function() {
-          method.invokeOnModule('deviceId', badArg, {}, function() {});
+          method.invokeOnModule('deviceId', badArg, function() {});
         }, ReferenceError);
       });
     });
