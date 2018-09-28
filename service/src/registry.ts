@@ -334,7 +334,7 @@ export class Registry {
    *                                for logging or debugging.
    * @returns {Promise<ResultWithHttpResponse<Registry.BulkRegistryOperationResult>> | void} Promise if no callback function was passed, void otherwise.
    */
-  removeDevices(devices: Registry.DeviceDescription[], forceRemove: boolean, done: HttpResponseCallback<Registry.BulkRegistryOperationResult>): Promise<ResultWithHttpResponse<Registry.BulkRegistryOperationResult>> | void {
+  removeDevices(devices: Registry.DeviceDescription[], forceRemove: boolean, done?: HttpResponseCallback<Registry.BulkRegistryOperationResult>): Promise<ResultWithHttpResponse<Registry.BulkRegistryOperationResult>> | void {
     return httpCallbackToPromise((_callback) => {
       this._processBulkDevices(devices, null, forceRemove, 'Delete', 'DeleteIfMatchETag', _callback);
     }, done);
@@ -930,7 +930,7 @@ export class Registry {
    *
    * @throws {ReferenceError}       If the deviceId, content, or done argument is falsy.
    */
-  applyConfigurationContentOnDevice(deviceId: string, content: ConfigurationContent, done: HttpResponseCallback<any>): Promise<ResultWithHttpResponse<any>> | void {
+  applyConfigurationContentOnDevice(deviceId: string, content: ConfigurationContent, done?: HttpResponseCallback<any>): Promise<ResultWithHttpResponse<any>> | void {
     return httpCallbackToPromise((_callback) => {
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_024: [The `applyConfigurationContentOnDevice` method shall throw a `ReferenceError` exception if `deviceId`, `content`, or `done` is falsy. ]*/
       if (!deviceId) throw new ReferenceError('Argument \'deviceId\' cannot be falsy');
@@ -972,7 +972,7 @@ export class Registry {
    * @throws {ReferenceError}       If the module or done argument is falsy.
    * @throws {ArgumentError}        If the module object is missing a deviceId or moduleId value.
    */
-  addModule(module: Module, done: TripleValueCallback<any, any>): Promise<ResultWithHttpResponse<any>> | void {
+  addModule(module: Module, done?: HttpResponseCallback<any>): Promise<ResultWithHttpResponse<any>> | void {
     return httpCallbackToPromise((_callback) => {
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_026: [The `addModule` method shall throw a `ReferenceError` exception if `module` or `done` is falsy. ]*/
       if (!module) throw new ReferenceError('Argument \'module\' cannot be falsy');

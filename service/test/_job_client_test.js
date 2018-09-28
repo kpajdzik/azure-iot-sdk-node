@@ -190,7 +190,7 @@ describe('JobClient', function() {
 
       var client = new JobClient(fakeRestApiClient);
       var query = client.createQuery(null, null, fakePageSize);
-      query.next(function() {});
+      query.next(undefined, function() {});
       assert.strictEqual(fakeRestApiClient.executeApiCall.args[0][0], 'GET');
       assert.strictEqual(fakeRestApiClient.executeApiCall.args[0][1], '/jobs/v2/query' + endpoint.versionQueryString());
       assert.deepEqual(fakeRestApiClient.executeApiCall.args[0][2], { 'x-ms-max-item-count': fakePageSize });
@@ -205,7 +205,7 @@ describe('JobClient', function() {
 
       var client = new JobClient(fakeRestApiClient);
       var query = client.createQuery(fakeJobType, fakeJobStatus, fakePageSize);
-      query.next(function() {});
+      query.next(undefined, function() {});
       assert.strictEqual(fakeRestApiClient.executeApiCall.args[0][0], 'GET');
       assert.strictEqual(fakeRestApiClient.executeApiCall.args[0][1], '/jobs/v2/query' + endpoint.versionQueryString() + '&jobStatus=' + fakeJobStatus + '&jobType=' + fakeJobType);
       assert.deepEqual(fakeRestApiClient.executeApiCall.args[0][2], { 'x-ms-max-item-count': fakePageSize });
