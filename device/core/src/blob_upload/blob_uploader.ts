@@ -6,7 +6,7 @@
 import { Stream } from 'stream';
 import { errors } from 'azure-iot-common';
 import { UploadParams, BlobUploader as BlobUploaderInterface } from './blob_upload_client';
-import { tripleValueCallbackToPromise, TripleValueCallback } from 'azure-iot-common/lib/promise_utils';
+import { tripleValueCallbackToPromise, TripleValueCallback } from 'azure-iot-common';
 
 /**
  * @private

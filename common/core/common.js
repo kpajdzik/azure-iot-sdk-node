@@ -34,6 +34,7 @@ module.exports = {
   httpCallbackToPromise: require('./lib/promise_utils').httpCallbackToPromise,
   Callback: require('./lib/promise_utils').Callback,
   ErrorCallback: require('./lib/promise_utils').ErrorCallback,
+  NoErrorCallback: require('./lib/promise_utils').NoErrorCallback,
   DoubleValueCallback: require('./lib/promise_utils').DoubleValueCallback,
   TripleValueCallback: require('./lib/promise_utils').TripleValueCallback,
   HttpResponseCallback: require('./lib/promise_utils').HttpResponseCallback

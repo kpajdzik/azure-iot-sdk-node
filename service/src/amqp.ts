@@ -8,12 +8,11 @@ import * as dbg from 'debug';
 import * as machina from 'machina';
 import * as async from 'async';
 
-import { anHourFromNow, endpoint, errors, results, SharedAccessSignature, Message, callbackToPromise } from 'azure-iot-common';
+import { anHourFromNow, endpoint, errors, results, SharedAccessSignature, Message, callbackToPromise, TripleValueCallback, tripleValueCallbackToPromise, Callback } from 'azure-iot-common';
 import { Amqp as Base, AmqpMessage, SenderLink, AmqpBaseTransportConfig } from 'azure-iot-amqp-base';
 import { translateError } from './amqp_service_errors.js';
 import { Client } from './client';
 import { ServiceReceiver } from './service_receiver.js';
-import { TripleValueCallback, tripleValueCallbackToPromise, Callback } from 'azure-iot-common/lib/promise_utils';
 import { IncomingMessage } from 'http';
 import { ResultWithIncomingMessage, IncomingMessageCallback, createResultWithIncomingMessage } from './interfaces.js';
 
@@ -541,6 +540,4 @@ export class Amqp extends EventEmitter implements Client.Transport {
       }
     });
   }
-
-
 }

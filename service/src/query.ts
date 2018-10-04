@@ -6,7 +6,7 @@
 import { Twin } from './twin';
 import { Registry } from './registry';
 import { IncomingMessageCallback, ResultWithIncomingMessage, createResultWithIncomingMessage } from './interfaces';
-import { tripleValueCallbackToPromise } from 'azure-iot-common/lib/promise_utils';
+import { tripleValueCallbackToPromise } from 'azure-iot-common';
 
 /**
  * Constructs a Query object that provides APIs to trigger the execution of a device query.

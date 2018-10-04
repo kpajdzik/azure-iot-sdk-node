@@ -96,11 +96,11 @@ describe('PromiseUtils', () => {
                 key: 'value',
                 id: 42
             };
-            const functionWithSimpleResult = (callback) => {
+            const functionWithComplexResult = (callback) => {
                 callback(undefined, returnValue);
             }
 
-            callbackToPromise(functionWithSimpleResult).then(result => {
+            callbackToPromise(functionWithComplexResult).then(result => {
                 assert.deepEqual(result, returnValue);
                 done();
             }).catch(error => {

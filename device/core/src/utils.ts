@@ -4,7 +4,7 @@
 'use strict';
 
 import { getAgentPlatformString } from 'azure-iot-common';
-import { NoErrorCallback, noErrorCallbackToPromise } from 'azure-iot-common/lib/promise_utils';
+import { NoErrorCallback, noErrorCallbackToPromise } from 'azure-iot-common';
 
 // tslint:disable-next-line:no-var-requires
 const packageJson = require('../package.json');

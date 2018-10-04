@@ -6,7 +6,7 @@
 import { endpoint } from 'azure-iot-common';
 import { RestApiClient } from 'azure-iot-http-base';
 import { DeviceMethodParams } from './interfaces';
-import { TripleValueCallback, tripleValueCallbackToPromise } from 'azure-iot-common/lib/promise_utils';
+import { TripleValueCallback, tripleValueCallbackToPromise } from 'azure-iot-common';
 
 /**
  * @private
