@@ -61,6 +61,10 @@ export class ProvisioningServiceClient {
    * @returns {Promise<void> | void} Promise if no callback function was passed, void otherwise.
    */
   public deleteIndividualEnrollment(enrollmentOrId: string | IndividualEnrollment, etagOrCallback?: string | ErrorCallback, deleteCallback?: ErrorCallback): Promise<void> | void {
+    if (deleteCallback && !(deleteCallback instanceof Function)) {
+      throw new ArgumentError('Callback has to be a Function');
+    }
+
     if (!deleteCallback && etagOrCallback instanceof Function) {
       deleteCallback = etagOrCallback;
       etagOrCallback = undefined;
@@ -129,6 +133,10 @@ export class ProvisioningServiceClient {
    * @returns {Promise<void> | void} Promise if no callback function was passed, void otherwise.
    */
   public deleteEnrollmentGroup(enrollmentGroupOrId: string | EnrollmentGroup, etagOrCallback?: string | ErrorCallback, deleteCallback?: ErrorCallback): Promise<void> | void {
+    if (deleteCallback && !(deleteCallback instanceof Function)) {
+      throw new ArgumentError('Callback has to be a Function');
+    }
+
     if (etagOrCallback instanceof Function) {
       deleteCallback = etagOrCallback;
       etagOrCallback = undefined;
@@ -225,6 +233,10 @@ export class ProvisioningServiceClient {
    * @returns {Promise<void> | void} Promise if no callback function was passed, void otherwise.
    */
   public deleteDeviceRegistrationState(idOrRegistrationState: string | DeviceRegistrationState, etagOrCallback?: string | ErrorCallback, deleteCallback?: ErrorCallback): Promise<void> | void {
+    if (deleteCallback && !(deleteCallback instanceof Function)) {
+      throw new ArgumentError('Callback has to be a Function');
+    }
+
     if (etagOrCallback instanceof Function) {
       deleteCallback = etagOrCallback;
       etagOrCallback = undefined;

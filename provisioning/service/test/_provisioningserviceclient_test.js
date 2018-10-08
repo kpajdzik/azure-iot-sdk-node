@@ -367,7 +367,7 @@ describe('ProvisioningServiceClient', function () {
         });
         assert.throws(function () {
           de[methodUnderTest]('fake-registration', 'etag', 'not the correct type');
-        }, TypeError);
+        }, errors.ArgumentError);
       });
 
       /*Tests_SRS_NODE_PROVISIONING_SERVICE_CLIENT_06_042: [The `deleteIndividualEnrollment` method, if the first argument is an IndividualEnrollment object, the second argument if present, must be a callback, otherwise shall return a Promise.] */
