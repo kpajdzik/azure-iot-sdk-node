@@ -422,7 +422,7 @@ export class Amqp extends EventEmitter implements Client.Transport {
     return tripleValueCallbackToPromise((_callback) => {
       this._fsm.handle('connect', (err) => {
         if (err) {
-          done(translateError('AMQP Transport: Could not connect', err));
+          _callback(translateError('AMQP Transport: Could not connect', err));
         } else {
           _callback(null, new results.Connected());
         }
