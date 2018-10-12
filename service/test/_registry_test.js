@@ -1473,6 +1473,19 @@ describe('Registry', function () {
       var registry = new Registry(fakeConfig, fakeHttpHelper);
       registry.updateConfiguration(fakeConfiguration, testCallback);
     });
+
+    it('returns a promise if no callback is not specified', function (testCallback) {
+      var fakeHttpHelper = {
+        executeApiCall: function (method, path, httpHeaders, body, done) {
+          done();
+        }
+      };
+
+      var registry = new Registry(fakeConfig, fakeHttpHelper);
+      const promise = registry.updateConfiguration(fakeConfiguration);
+      assert.typeOf(promise, "Promise");
+      promise.then(_ => testCallback()).catch(err => testCallback(err));
+    });
   });
 
   describe('#removeConfiguration', function () {
@@ -1819,5 +1832,32 @@ describe('Registry', function () {
       registry.removeModule(mod, testCallback);
     });
 
+  })
+
+  describe("#_updateConfiguration", function() {
+    [undefined, null, ''].forEach(function (badValue) {
+        it ("throws when done is falsy", function() {
+          var registry = new Registry(fakeConfig, {});
+          assert.throws(function() { registry._updateConfiguration({}, false, badValue); })
+        });
+      });
+    });
+
+  describe("#_updateModule", function() {
+    [undefined, null, ''].forEach(function (badValue) {
+      it ("throws when done is falsy", function() {
+        var registry = new Registry(fakeConfig, {});
+        assert.throws(function() { registry._updateModule({}, false, badValue); })
+      });
+    });
+  });
+
+  describe("#_removeModule", function() {
+    [undefined, null, ''].forEach(function (badValue) {
+      it ("throws when done is falsy", function() {
+        var registry = new Registry(fakeConfig, {});
+        assert.throws(function() { registry._removeModule({}, "moduleId", badValue); })
+      });
+    });
   });
 });
