@@ -113,12 +113,12 @@ describe('PromiseUtils', () => {
                 key: 'value',
                 id: 42
             };
-            const functionWithSimpleResult = (callback) => {
+            const functionWithComplexResult = (callback) => {
                 callback(undefined, returnValue);
             }
 
             try {
-                const result = await callbackToPromise(functionWithSimpleResult);
+                const result = await callbackToPromise(functionWithComplexResult);
                 assert.deepEqual(result, returnValue);
             } catch (error) {
                 assert.fail(error);
@@ -130,11 +130,11 @@ describe('PromiseUtils', () => {
                 key: 'value',
                 id: 42
             };
-            const functionWithSimpleResult = (callback) => {
+            const functionWithComplexResult = (callback) => {
                 setTimeout(() => callback(undefined, returnValue), 1000);
             };
 
-            callbackToPromise(functionWithSimpleResult).then(result => {
+            callbackToPromise(functionWithComplexResult).then(result => {
                 assert.deepEqual(result, returnValue);
                 done();
             }).catch(error => {
@@ -307,12 +307,12 @@ describe('PromiseUtils', () => {
                 key: 'value',
                 id: 42
             };
-            const functionWithSimpleResult = (callback) => {
+            const functionWithComplexResult = (callback) => {
                 callback(returnValue);
             };
 
             try {
-                const result = await noErrorCallbackToPromise(functionWithSimpleResult);
+                const result = await noErrorCallbackToPromise(functionWithComplexResult);
                 assert.deepEqual(result, returnValue);
             } catch (error) {
                 assert.fail(error);
@@ -415,14 +415,14 @@ describe('PromiseUtils', () => {
                 key: 'value',
                 id: 42
             };
-            const functionWithSimpleResult = (callback) => {
+            const functionWithComplexResult = (callback) => {
                 callback(returnValue, undefined);
             };
             const packFunction = (value, _) => { return value; }
 
 
             try {
-                const result = await doubleValueCallbackToPromise(functionWithSimpleResult, packFunction);
+                const result = await doubleValueCallbackToPromise(functionWithComplexResult, packFunction);
                 assert.deepEqual(result, returnValue);
             } catch (error) {
                 assert.fail(error);
@@ -514,14 +514,14 @@ describe('PromiseUtils', () => {
                 key: 'value',
                 id: 42
             };
-            const functionWithSimpleResult = (callback) => {
+            const functionWithComplexResult = (callback) => {
                 callback(undefined, returnValue);
             };
             const packFunction = (value, _) => { return value; }
 
 
             try {
-                const result = await tripleValueCallbackToPromise(functionWithSimpleResult, packFunction);
+                const result = await tripleValueCallbackToPromise(functionWithComplexResult, packFunction);
                 assert.deepEqual(result, returnValue);
             } catch (error) {
                 assert.fail(error);
