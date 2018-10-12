@@ -1475,13 +1475,13 @@ describe('Registry', function () {
     });
 
     it('returns a promise if no callback is not specified', function (testCallback) {
-      var fakeHttpHelper = {
+      const fakeHttpHelper = {
         executeApiCall: function (method, path, httpHeaders, body, done) {
           done();
         }
       };
 
-      var registry = new Registry(fakeConfig, fakeHttpHelper);
+      const registry = new Registry(fakeConfig, fakeHttpHelper);
       const promise = registry.updateConfiguration(fakeConfiguration);
       assert.typeOf(promise, "Promise");
       promise.then(_ => testCallback()).catch(err => testCallback(err));
@@ -1830,6 +1830,19 @@ describe('Registry', function () {
       }
       var registry = new Registry(fakeConfig, fakeHttpHelper);
       registry.removeModule(mod, testCallback);
+    });
+
+    it('returns a Promise if no callback was specified', function (testCallback) {
+      const fakeHttpHelper = {
+        executeApiCall: function (method, path, httpHeaders, body, done) {
+          done();
+        }
+      };
+
+      const registry = new Registry(fakeConfig, fakeHttpHelper);
+      const promise = registry.removeModule("deviceId", "moduleId");
+      assert.typeOf(promise, "Promise");
+      promise.then(_ => testCallback()).catch(err => testCallback(err));
     });
 
   })

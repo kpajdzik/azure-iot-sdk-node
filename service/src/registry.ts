@@ -1201,7 +1201,7 @@ export class Registry {
     const callback = done || (doneOrModuleId instanceof Function ? doneOrModuleId : undefined);
 
     if (callback) {
-      return this._removeModule(moduleOrDeviceId, doneOrModuleId, done);
+      return this._removeModule(moduleOrDeviceId, doneOrModuleId, callback);
     }
 
     return httpCallbackToPromise((_callback) => {
