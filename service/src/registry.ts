@@ -505,8 +505,6 @@ export class Registry {
     return httpCallbackToPromise((_callback) => {
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_16_019: [The `getTwin` method shall throw a `ReferenceError` if the `deviceId` parameter is falsy.]*/
       if (!deviceId) throw new ReferenceError('the \'deviceId\' cannot be falsy');
-      /*Codes_SRS_NODE_IOTHUB_REGISTRY_16_020: [The `getTwin` method shall throw a `ReferenceError` if the `done` parameter is falsy.]*/
-      if (!_callback) throw new ReferenceError('the \'done\' argument cannot be falsy');
 
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_16_049: [The `getTwin` method shall construct an HTTP request using information supplied by the caller, as follows:
       ```
@@ -541,7 +539,6 @@ export class Registry {
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_001: [The `getModuleTwin` method shall throw a `ReferenceError` exception if `deviceId`, `moduleId`, or `done` is falsy. ]*/
       if (!deviceId) throw new ReferenceError('Argument \'deviceId\' cannot be falsy');
       if (!moduleId) throw new ReferenceError('Argument \'moduleId\' cannot be falsy');
-      if (!_callback) throw new ReferenceError('Argument \'done\' cannot be falsy');
 
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_002: [The `getModuleTwin` method shall construct an HTTP request using information supplied by the caller, as follows:
       ```
@@ -630,7 +627,6 @@ export class Registry {
       if (!moduleId) throw new ReferenceError('Argument \'moduleId\' cannot be falsy');
       if (!patch) throw new ReferenceError('Argument \'patch\' cannot be falsy');
       if (!etag) throw new ReferenceError('Argument \'etag\' cannot be falsy');
-      if (!_callback) throw new ReferenceError('Argument \'done\' cannot be falsy');
 
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_005: [The `updateModuleTwin` method shall construct an HTTP request using information supplied by the caller, as follows:
       ```
@@ -716,7 +712,6 @@ export class Registry {
     return httpCallbackToPromise((_callback) => {
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_007: [The `addConfiguration` method shall throw a `ReferenceError` exception if `configuration` or `done` is falsy. ]*/
       if (!configuration) throw new ReferenceError('configuration cannot be falsy');
-      if (!_callback) throw new ReferenceError('done cannot be falsy');
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_008: [The `addConfiguration` method shall throw an `ArgumentError` exception if `configuration.id` is falsy. ]*/
       if (!configuration.id) throw new ArgumentError('configuration object is missing id property');
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_009: [The `addConfiguration` method shall set `configuration.schemaVersion` to '1.0' if it is not already set. ]*/
@@ -758,7 +753,6 @@ export class Registry {
     return httpCallbackToPromise((_callback) => {
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_011: [The `getConfiguration` method shall throw a `ReferenceError` exception if `configurationId` is falsy. ]*/
       if (!configurationId) throw new ReferenceError('Argument \'configurationId\' cannot be falsy');
-      if (!_callback) throw new ReferenceError('Argument \'done\' cannot be falsy');
 
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_012: [The `getConfiguration` method shall construct an HTTP request using information supplied by the caller, as follows:
       ```
@@ -785,9 +779,6 @@ export class Registry {
    */
   getConfigurations(done?: HttpResponseCallback<Configuration[]>): Promise<ResultWithHttpResponse<Configuration[]>> | void {
     return httpCallbackToPromise((_callback) => {
-      /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_013: [The `getConfigurations` method shall throw a `ReferenceError` exception if `done` is falsy. ]*/
-      if (!_callback) throw new ReferenceError('Argument \'done\' cannot be falsy');
-
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_014: [The `getConfigurations` method shall construct an HTTP request using information supplied by the caller, as follows:
       ```
       GET /configurations?api-version=<version> HTTP/1.1
@@ -899,7 +890,6 @@ export class Registry {
     return httpCallbackToPromise((_callback) => {
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_022: [The `removeConfiguration` method shall throw a `ReferenceError` exception if `configurationId` or `done` is falsy. ]*/
       if (!configurationId) throw new ReferenceError('Argument \'configurationId\' cannot be falsy');
-      if (!_callback) throw new ReferenceError('Argument \'done\' cannot be falsy');
 
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_023: [The `removeConfiguration` method shall construct an HTTP request using information supplied by the caller, as follows:
       ```
@@ -935,7 +925,6 @@ export class Registry {
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_024: [The `applyConfigurationContentOnDevice` method shall throw a `ReferenceError` exception if `deviceId`, `content`, or `done` is falsy. ]*/
       if (!deviceId) throw new ReferenceError('Argument \'deviceId\' cannot be falsy');
       if (!content) throw new ReferenceError('Argument \'content\' cannot be falsy');
-      if (!_callback) throw new ReferenceError('Argument \'done\' cannot be falsy');
 
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_025: [The `applyConfigurationContentOnDevice` method shall construct an HTTP request using information supplied by the caller, as follows:
       ```
@@ -976,7 +965,6 @@ export class Registry {
     return httpCallbackToPromise((_callback) => {
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_026: [The `addModule` method shall throw a `ReferenceError` exception if `module` or `done` is falsy. ]*/
       if (!module) throw new ReferenceError('Argument \'module\' cannot be falsy');
-      if (!_callback) throw new ReferenceError('Argument \'done\' cannot be falsy');
 
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_027: [The `addModule` method shall throw an `ArgumentError` exception if `module.deviceId` or `module.moduleId` is falsy. ]*/
       if (!module.deviceId) throw new ArgumentError('deviceId property is missing from module object');
@@ -1019,7 +1007,6 @@ export class Registry {
     return httpCallbackToPromise((_callback) => {
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_029: [The `getModulesOnDevice` method shall throw a `ReferenceError` exception if `deviceId` or `done` is falsy. ]*/
       if (!deviceId) throw new ReferenceError('Argument \'deviceId\' cannot be falsy');
-      if (!_callback) throw new ReferenceError('Argument \'done\' cannot be falsy');
 
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_030: [The `getModulesOnDevice` method shall construct an HTTP request using information supplied by the caller, as follows:
       ```
@@ -1050,7 +1037,6 @@ export class Registry {
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_031: [The `getModule` method shall throw a `ReferenceError` exception if `deviceId`, `moduleId`, or `done` is falsy. ]*/
       if (!deviceId) throw new ReferenceError('Argument \'deviceId\' cannot be falsy');
       if (!moduleId) throw new ReferenceError('Argument \'moduleId\' cannot be falsy');
-      if (!_callback) throw new ReferenceError('Argument \'done\' cannot be falsy');
 
       /*Codes_SRS_NODE_IOTHUB_REGISTRY_18_032: [The `getModule` method shall construct an HTTP request using information supplied by the caller, as follows:
       ```
