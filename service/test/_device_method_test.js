@@ -101,6 +101,27 @@ describe('DeviceMethod', function() {
         }, ReferenceError);
       });
     });
+
+    it('returns a promise with result argument and a transport-specific response second argument', function(done) {
+      var fakeResult = {
+        status: 'success'
+      };
+      var fakeResponse = {
+        statusCode: 200
+      };
+      var fakeRestClientSucceeds = {
+        executeApiCall: function(method, path, headers, body, timeout, callback) {
+          callback(null, fakeResult, fakeResponse);
+        }
+      };
+
+      var method = new DeviceMethod({ methodName: 'foo', payload: null, responseTimeoutInSeconds: 42 }, fakeRestClientSucceeds);
+      method.invokeOn("deviceId").then(res => {
+        assert.deepEqual(res.device, fakeResult);
+        assert.isDefined(res.response, fakeResponse);
+        done();
+      }).catch(err => done(err));
+    });
   });
 
   var fakeDeviceId = 'deviceId';
