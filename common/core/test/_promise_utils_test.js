@@ -108,23 +108,6 @@ describe('PromiseUtils', () => {
             });
         });
 
-        it('enables async await', async function () {
-            const returnValue = {
-                key: 'value',
-                id: 42
-            };
-            const functionWithComplexResult = (callback) => {
-                callback(undefined, returnValue);
-            }
-
-            try {
-                const result = await callbackToPromise(functionWithComplexResult);
-                assert.deepEqual(result, returnValue);
-            } catch (error) {
-                assert.fail(error);
-            }
-        });
-
         it('returns complex object properly from long running operation', (done) => {
             const returnValue = {
                 key: 'value',
